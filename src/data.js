@@ -164,10 +164,6 @@ export function getSortedPeople() {
   return [...people].sort((a, b) => a.sortOrder - b.sortOrder)
 }
 
-export function getPersonBySlug(slug) {
-  return people.find((person) => person.slug === slug) || null
-}
-
 export function pickUniqueCompliments(person, amount = 3, random = Math.random) {
   const pool = [...person.compliments]
 
