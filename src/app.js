@@ -3,6 +3,8 @@ import { pickAnimation, playMicroAnimation } from './animations.js'
 import { clearMission, loadMission, saveMission } from './storage.js'
 
 export function createApp(root) {
+  setupGalleryDrift()
+
   const state = {
     screen: loadMission() ? 'resume_prompt' : 'target_selection',
     selectedPerson: null,
@@ -23,6 +25,16 @@ export function createApp(root) {
     state.selectedCompliment = null
     state.selectedAnimation = null
     setScreen('target_overlay')
+  }
+
+  function openPerson(person, card) {
+    if (document.startViewTransition && !prefersReducedMotion()) {
+      card.querySelector('.target-image').style.viewTransitionName = 'selected-target'
+      document.startViewTransition(() => choosePerson(person))
+      return
+    }
+
+    choosePerson(person)
   }
 
   function chooseCompliment(compliment) {
@@ -100,9 +112,10 @@ export function createApp(root) {
     const grid = document.createElement('div')
     grid.className = 'target-grid'
 
-    getSortedPeople().forEach((person) => {
-      const card = button('', 'target-card', () => choosePerson(person))
+    getSortedPeople().forEach((person, index) => {
+      const card = button('', 'target-card', () => openPerson(person, card))
       card.setAttribute('aria-label', person.displayName)
+      card.style.setProperty('--tilt', `${getCardTilt(index)}deg`)
       card.append(renderPersonImage(person.image, person.displayName, 'target-image'))
       card.append(textNode('span', 'target-name', person.displayName))
       grid.append(card)
@@ -155,10 +168,9 @@ export function createApp(root) {
       textNode(
         'p',
         'mission-instruction',
-        'Zie je deze figuur? Geef het gekozen compliment in het echt.',
+        'Vind deze figuur en geef dit compliment in het echt.',
       ),
-      textNode('p', 'reward-bridge', 'Dan wacht je als beloning:'),
-      textNode('p', 'reward-text', mission.rewardText),
+      renderReward(mission.rewardText),
       textNode('p', 'consent-note', 'Alles vrijwillig. Wildeburg blijft liefde met toestemming.'),
     )
 
@@ -199,6 +211,63 @@ function button(label, className, onClick) {
   element.textContent = label
   element.addEventListener('click', onClick)
   return element
+}
+
+function renderReward(rewardText) {
+  const reward = document.createElement('p')
+  reward.className = 'reward-text'
+
+  const label = document.createElement('span')
+  label.className = 'reward-label'
+  label.textContent = 'Beloning:'
+
+  reward.append(label, document.createTextNode(` ${rewardText}`))
+  return reward
+}
+
+function getCardTilt(index) {
+  return [-1.2, 0.8, 1.1, -0.7, -0.9, 1.3, 0.6, -1][index] || 0
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function setupGalleryDrift() {
+  let ticking = false
+
+  function update() {
+    ticking = false
+
+    if (prefersReducedMotion()) {
+      document.documentElement.style.setProperty('--gallery-drift-left', '0px')
+      document.documentElement.style.setProperty('--gallery-drift-right', '0px')
+      return
+    }
+
+    const drift = Math.max(-12, Math.min(12, window.scrollY * 0.035))
+    document.documentElement.style.setProperty('--gallery-drift-left', `${drift.toFixed(2)}px`)
+    document.documentElement.style.setProperty('--gallery-drift-right', `${(-drift).toFixed(2)}px`)
+  }
+
+  function requestUpdate() {
+    if (ticking) {
+      return
+    }
+
+    ticking = true
+    window.requestAnimationFrame(update)
+  }
+
+  update()
+  window.addEventListener('scroll', requestUpdate, { passive: true })
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+  if (motionQuery.addEventListener) {
+    motionQuery.addEventListener('change', update)
+  } else {
+    motionQuery.addListener(update)
+  }
 }
 
 function renderPersonImage(src, alt, className) {
