@@ -304,6 +304,7 @@ button:focus-visible {
   display: block;
   width: 100%;
   object-fit: cover;
+  object-position: var(--image-position, 50% 20%);
   background: #150917;
 }
 

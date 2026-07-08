@@ -6,24 +6,14 @@ export const eventConfig = {
   defaultReward: 'een scheutje godendrank, mits iedereen daar zin in heeft',
 }
 
-const colors = [
-  ['#ff4b6e', '#ffe66d'],
-  ['#11d9ff', '#ff7a1a'],
-  ['#ff45d4', '#32ff9f'],
-  ['#f8ff45', '#7a5cff'],
-  ['#ff6b35', '#00f5d4'],
-  ['#f72585', '#b9fbc0'],
-  ['#00bbf9', '#fee440'],
-  ['#ff99c8', '#9b5de5'],
-]
-
 export const people = [
   {
     id: 'person-01',
     slug: 'de-discobalie',
     displayName: 'De Discobalie',
     sortOrder: 1,
-    image: placeholderImage(0, 'DB'),
+    image: '/images/people/person-01.webp',
+    imagePosition: '50% 34%',
     reward: 'een fluisterzegen met denkbeeldige glitter',
     compliments: [
       compliment('p01-c01', 'Jij lijkt op iemand die zelfs schaduw warmer kan maken.'),
@@ -41,7 +31,8 @@ export const people = [
     slug: 'kapitein-kuslicht',
     displayName: 'Kapitein Kuslicht',
     sortOrder: 2,
-    image: placeholderImage(1, 'KK'),
+    image: '/images/people/person-02.webp',
+    imagePosition: '50% 10%',
     compliments: [
       compliment('p02-c01', 'Jij ziet eruit alsof de maan net je styling heeft gedaan.'),
       compliment('p02-c02', 'Als charme geluid maakte, stond jij nu op de mainstage.'),
@@ -58,7 +49,8 @@ export const people = [
     slug: 'madame-mist',
     displayName: 'Madame Mist',
     sortOrder: 3,
-    image: placeholderImage(2, 'MM'),
+    image: '/images/people/person-03.webp',
+    imagePosition: '50% 10%',
     reward: 'een koninklijke knipoog en een compleet vrijwillig luchtapplaus',
     compliments: [
       compliment('p03-c01', 'Jij ziet eruit alsof je net uit een geheime droom bent gestapt.'),
@@ -76,7 +68,8 @@ export const people = [
     slug: 'baron-banaan',
     displayName: 'Baron Banaan',
     sortOrder: 4,
-    image: placeholderImage(3, 'BB'),
+    image: '/images/people/person-04.webp',
+    imagePosition: '50% 10%',
     compliments: [
       compliment('p04-c01', 'Jij hebt de waardigheid van een fruitmand met geheimen.'),
       compliment('p04-c02', 'Je loopt rond alsof absurditeit je achternaam is.'),
@@ -93,7 +86,8 @@ export const people = [
     slug: 'neon-nonkel',
     displayName: 'Neon Nonkel',
     sortOrder: 5,
-    image: placeholderImage(4, 'NN'),
+    image: '/images/people/person-05.webp',
+    imagePosition: '50% 10%',
     reward: 'een mini-preek over licht, liefde en slechte timing',
     compliments: [
       compliment('p05-c01', 'Jij lijkt opgeladen door een illegale zonsondergang.'),
@@ -111,7 +105,8 @@ export const people = [
     slug: 'prinses-plakband',
     displayName: 'Prinses Plakband',
     sortOrder: 6,
-    image: placeholderImage(5, 'PP'),
+    image: '/images/people/person-06.webp',
+    imagePosition: '50% 14%',
     compliments: [
       compliment('p06-c01', 'Jij houdt deze realiteit duidelijk tijdelijk bij elkaar.'),
       compliment('p06-c02', 'Je hebt de uitstraling van een oplossing met glitterrand.'),
@@ -128,7 +123,8 @@ export const people = [
     slug: 'dokter-dubbelzien',
     displayName: 'Dokter Dubbelzien',
     sortOrder: 7,
-    image: placeholderImage(6, 'DD'),
+    image: '/images/people/person-07.webp',
+    imagePosition: '50% 10%',
     reward: 'een diagnose van acute feestelijkheid',
     compliments: [
       compliment('p07-c01', 'Jij ziet eruit als het antwoord op een vraag die niemand durfde stellen.'),
@@ -146,7 +142,8 @@ export const people = [
     slug: 'sint-schuim',
     displayName: 'Sint Schuim',
     sortOrder: 8,
-    image: placeholderImage(7, 'SS'),
+    image: '/images/people/person-08.webp',
+    imagePosition: '50% 10%',
     compliments: [
       compliment('p08-c01', 'Jij hebt de heilige zachtheid van een schuimkraag bij zonsondergang.'),
       compliment('p08-c02', 'Je ziet eruit alsof plezier net een beschermheilige kreeg.'),
@@ -177,31 +174,4 @@ export function pickUniqueCompliments(person, amount = 3, random = Math.random) 
 
 function compliment(id, message) {
   return { id, message }
-}
-
-function placeholderImage(index, initials) {
-  const [start, end] = colors[index]
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop stop-color="${start}"/>
-        <stop offset="1" stop-color="${end}"/>
-      </linearGradient>
-      <filter id="glow"><feGaussianBlur stdDeviation="11" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <rect width="720" height="900" fill="#120914"/>
-    <circle cx="${170 + index * 18}" cy="160" r="170" fill="${end}" opacity=".23"/>
-    <circle cx="${500 - index * 12}" cy="710" r="230" fill="${start}" opacity=".18"/>
-    <path d="M80 690 C210 520 320 820 500 570 C610 420 640 620 676 350" fill="none" stroke="url(#g)" stroke-width="24" stroke-linecap="round" opacity=".75"/>
-    <g filter="url(#glow)">
-      <circle cx="360" cy="365" r="156" fill="url(#g)"/>
-      <rect x="220" y="500" width="280" height="190" rx="92" fill="url(#g)" opacity=".88"/>
-      <circle cx="300" cy="342" r="18" fill="#160916"/>
-      <circle cx="420" cy="342" r="18" fill="#160916"/>
-      <path d="M294 425 Q360 474 426 425" fill="none" stroke="#160916" stroke-width="16" stroke-linecap="round"/>
-    </g>
-    <text x="360" y="806" fill="#fff7d7" font-family="Arial, sans-serif" font-size="94" font-weight="800" text-anchor="middle">${initials}</text>
-  </svg>`
-
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }

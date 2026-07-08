@@ -116,7 +116,9 @@ export function createApp(root) {
       const card = button('', 'target-card', () => openPerson(person, card))
       card.setAttribute('aria-label', person.displayName)
       card.style.setProperty('--tilt', `${getCardTilt(index)}deg`)
-      card.append(renderPersonImage(person.image, person.displayName, 'target-image'))
+      card.append(
+        renderPersonImage(person.image, person.displayName, 'target-image', person.imagePosition),
+      )
       card.append(textNode('span', 'target-name', person.displayName))
       grid.append(card)
     })
@@ -135,7 +137,7 @@ export function createApp(root) {
 
     const identity = section('overlay-identity')
     identity.append(
-      renderPersonImage(person.image, person.displayName, 'overlay-image'),
+      renderPersonImage(person.image, person.displayName, 'overlay-image', person.imagePosition),
       textNode('h1', 'overlay-name', person.displayName),
     )
 
@@ -162,7 +164,12 @@ export function createApp(root) {
 
     card.append(
       changeButton,
-      renderPersonImage(mission.imagePath, mission.personDisplayName, 'mission-image'),
+      renderPersonImage(
+        mission.imagePath,
+        mission.personDisplayName,
+        'mission-image',
+        getMissionImagePosition(mission),
+      ),
       textNode('h1', 'mission-name', mission.personDisplayName),
       textNode('p', 'mission-quote', mission.complimentMessage),
       textNode(
@@ -270,21 +277,37 @@ function setupGalleryDrift() {
   }
 }
 
-function renderPersonImage(src, alt, className) {
+function renderPersonImage(src, alt, className, imagePosition) {
   const image = document.createElement('img')
   image.className = className
   image.src = src
   image.alt = alt
   image.loading = 'lazy'
   image.decoding = 'async'
+
+  if (imagePosition) {
+    image.style.setProperty('--image-position', imagePosition)
+  }
+
   return image
+}
+
+function getMissionImagePosition(mission) {
+  return getSortedPeople().find(
+    (person) => person.id === mission.personId || person.slug === mission.personSlug,
+  )?.imagePosition
 }
 
 function renderMiniPerson(mission) {
   const wrap = document.createElement('div')
   wrap.className = 'mini-person'
   wrap.append(
-    renderPersonImage(mission.imagePath, mission.personDisplayName, 'mini-image'),
+    renderPersonImage(
+      mission.imagePath,
+      mission.personDisplayName,
+      'mini-image',
+      getMissionImagePosition(mission),
+    ),
     textNode('span', 'mini-name', mission.personDisplayName),
   )
   return wrap

@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { existsSync } from 'node:fs'
 
 import { eventConfig, getSortedPeople, pickUniqueCompliments } from '../src/data.js'
 import { pickAnimation } from '../src/animations.js'
@@ -15,8 +16,25 @@ test('prototype has exactly eight temporary figures', () => {
 })
 
 test('each figure has enough complete local compliments', () => {
-  for (const person of getSortedPeople()) {
-    assert.ok(person.image.startsWith('data:image/svg+xml,'))
+  const expectedImages = Array.from(
+    { length: 8 },
+    (_, index) => `/images/people/person-${String(index + 1).padStart(2, '0')}.webp`,
+  )
+  const expectedPositions = [
+    '50% 34%',
+    '50% 10%',
+    '50% 10%',
+    '50% 10%',
+    '50% 10%',
+    '50% 14%',
+    '50% 10%',
+    '50% 10%',
+  ]
+
+  for (const [index, person] of getSortedPeople().entries()) {
+    assert.equal(person.image, expectedImages[index])
+    assert.equal(person.imagePosition, expectedPositions[index])
+    assert.equal(existsSync(`public${person.image}`), true)
     assert.ok(person.displayName.length > 0)
     assert.ok(person.compliments.length >= 8)
 
