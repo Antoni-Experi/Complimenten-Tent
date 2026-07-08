@@ -1,9 +1,11 @@
 import { eventConfig, getSortedPeople, pickUniqueCompliments } from './data.js'
 import { pickAnimation, playMicroAnimation } from './animations.js'
+import { trackAppOpen, trackComplimentSelected, trackTargetSelected } from './analytics.js'
 import { clearMission, loadMission, saveMission } from './storage.js'
 
 export function createApp(root) {
   setupGalleryDrift()
+  trackAppOpen()
 
   const state = {
     screen: loadMission() ? 'resume_prompt' : 'target_selection',
@@ -24,6 +26,7 @@ export function createApp(root) {
     state.shownCompliments = pickUniqueCompliments(person)
     state.selectedCompliment = null
     state.selectedAnimation = null
+    trackTargetSelected(person.id)
     setScreen('target_overlay')
   }
 
@@ -54,6 +57,7 @@ export function createApp(root) {
     }
 
     saveMission(mission)
+    trackComplimentSelected(mission.personId, mission.complimentId)
     state.mission = mission
     setScreen('mission')
     playMicroAnimation(root, state.selectedAnimation)

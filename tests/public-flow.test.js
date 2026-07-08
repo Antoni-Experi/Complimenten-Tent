@@ -2,8 +2,43 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync } from 'node:fs'
 
-import { eventConfig, getSortedPeople, pickUniqueCompliments } from '../src/data.js'
+import { complimentPool, eventConfig, getSortedPeople, pickUniqueCompliments } from '../src/data.js'
 import { pickAnimation } from '../src/animations.js'
+
+const expectedCompliments = [
+  {
+    id: 'compliment-01',
+    message: 'Ik vind dat muilen verplicht moet zijn minstens. Maar ja, wie ben ik hé?',
+  },
+  {
+    id: 'compliment-02',
+    message: 'Moest je een drankjeton zijn, ik zou voor jou betalen.',
+  },
+  {
+    id: 'compliment-03',
+    message: 'Als je ogen konden spreken, ze zouden mijn broek spontaan doen uitvallen.',
+  },
+  {
+    id: 'compliment-04',
+    message: 'Consent is key. En jouw slot wil ik wel openbeuken.',
+  },
+  {
+    id: 'compliment-05',
+    message: 'Stop die tijger in mijn tank.',
+  },
+  {
+    id: 'compliment-06',
+    message: 'Gelukkig droeg je dat badpak, want nu kan je verdrinken in mijn ogen.',
+  },
+  {
+    id: 'compliment-07',
+    message: 'Jij mag kiezen: blussen of kussen?',
+  },
+  {
+    id: 'compliment-08',
+    message: 'Pietje voor een tietje?',
+  },
+]
 
 test('prototype has exactly eight temporary figures', () => {
   const people = getSortedPeople()
@@ -15,7 +50,7 @@ test('prototype has exactly eight temporary figures', () => {
   )
 })
 
-test('each figure has enough complete local compliments', () => {
+test('each figure uses the same approved local compliment pool', () => {
   const expectedImages = Array.from(
     { length: 8 },
     (_, index) => `/images/people/person-${String(index + 1).padStart(2, '0')}.webp`,
@@ -36,21 +71,21 @@ test('each figure has enough complete local compliments', () => {
     assert.equal(person.imagePosition, expectedPositions[index])
     assert.equal(existsSync(`public${person.image}`), true)
     assert.ok(person.displayName.length > 0)
-    assert.ok(person.compliments.length >= 8)
-
-    for (const compliment of person.compliments) {
-      assert.match(compliment.message, /[.!?]$/)
-      assert.ok(compliment.message.length > 24)
-    }
+    assert.deepEqual(person.compliments, expectedCompliments)
   }
 })
 
-test('compliment picker returns three unique options', () => {
+test('runtime compliment pool contains exactly the approved eight compliments', () => {
+  assert.deepEqual(complimentPool, expectedCompliments)
+})
+
+test('compliment picker returns three unique options from the shared pool', () => {
   const [person] = getSortedPeople()
   const picked = pickUniqueCompliments(person, 3, () => 0.41)
 
   assert.equal(picked.length, 3)
   assert.equal(new Set(picked.map((compliment) => compliment.id)).size, 3)
+  assert.ok(picked.every((compliment) => complimentPool.includes(compliment)))
 })
 
 test('mission config remains local-only prototype data', () => {
