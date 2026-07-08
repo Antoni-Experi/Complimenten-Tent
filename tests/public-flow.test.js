@@ -56,21 +56,31 @@ test('each figure uses the same approved local compliment pool', () => {
     (_, index) => `/images/people/person-${String(index + 1).padStart(2, '0')}.webp`,
   )
   const expectedPositions = [
-    '50% 34%',
+    '50% 0%',
     '50% 10%',
+    '50% 0%',
     '50% 10%',
-    '50% 10%',
-    '50% 10%',
+    '50% 0%',
     '50% 14%',
+    '50% 0%',
     '50% 10%',
-    '50% 10%',
+  ]
+  const expectedDisplayNames = [
+    'René de Rukker',
+    'Fabian Fellatio',
+    'Zuchtende Zorro',
+    'Hitsige Hannes',
+    'Diego Dekhengst',
+    'MasturMatthi',
+    'Prinses Plakbek',
+    'Stijve Stylo',
   ]
 
   for (const [index, person] of getSortedPeople().entries()) {
     assert.equal(person.image, expectedImages[index])
     assert.equal(person.imagePosition, expectedPositions[index])
     assert.equal(existsSync(`public${person.image}`), true)
-    assert.ok(person.displayName.length > 0)
+    assert.equal(person.displayName, expectedDisplayNames[index])
     assert.deepEqual(person.compliments, expectedCompliments)
   }
 })
