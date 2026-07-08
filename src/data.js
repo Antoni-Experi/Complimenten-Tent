@@ -3,7 +3,7 @@ export const eventConfig = {
   title: 'De Complimenten-tent',
   intro:
     'Proficiat: je bent uitverkoren om op Wildeburg op zoek te gaan naar één van de 8 volgende figuren.',
-  defaultReward: 'een scheutje godendrank, mits iedereen daar zin in heeft',
+  defaultReward: 'een scheutje godendrank, of liever ineens een tongtwister?',
 }
 
 export const complimentPool = [
