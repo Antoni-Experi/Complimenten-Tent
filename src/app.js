@@ -3,8 +3,22 @@ import { pickAnimation, playMicroAnimation } from './animations.js'
 import { trackAppOpen, trackComplimentSelected, trackTargetSelected } from './analytics.js'
 import { clearMission, loadMission, saveMission } from './storage.js'
 
+const APP_IS_ARCHIVED = true
+const ARCHIVE_TITLE = 'Een wilde scan voor een wilde flirt is gesloten'
+const ARCHIVE_BODY =
+  'Wildeburg is voorbij. Bedankt voor de liefde, de awkward complimenten en de moedige missies.'
+const ARCHIVE_SIGNOFF = 'Tot de volgende editie.'
+
 export function createApp(root) {
   setupGalleryDrift()
+
+  if (APP_IS_ARCHIVED) {
+    root.replaceChildren(renderArchiveScreen())
+    return {
+      getState: () => ({ screen: 'archive' }),
+    }
+  }
+
   trackAppOpen()
 
   const state = {
@@ -194,6 +208,20 @@ export function createApp(root) {
   return {
     getState: () => ({ ...state }),
   }
+}
+
+function renderArchiveScreen() {
+  const main = pageShell('archive')
+  const card = section('mission-card archive-card')
+
+  card.append(
+    textNode('h1', 'mission-name', ARCHIVE_TITLE),
+    textNode('p', 'mission-instruction', ARCHIVE_BODY),
+    textNode('p', 'consent-note', ARCHIVE_SIGNOFF),
+  )
+
+  main.append(card)
+  return main
 }
 
 function pageShell(name) {
