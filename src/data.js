@@ -1,6 +1,6 @@
 export const eventConfig = {
   slug: 'wildeburg-2026',
-  title: 'De Complimenten-tent',
+  title: 'Een wilde scan voor een wilde flirt',
   intro:
     'Proficiat: je bent uitverkoren om op Wildeburg op zoek te gaan naar één van de 8 volgende figuren.',
   defaultReward: 'een scheutje godendrank, of liever ineens een tongtwister?',
