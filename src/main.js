@@ -11,7 +11,7 @@ if (root) {
 
   const title = document.createElement('p')
   title.className = 'resume-title'
-  title.textContent = 'De Complimenten-tent is gesloten.'
+  title.textContent = 'Een wilde scan voor een wilde flirt is gesloten.'
 
   const body = document.createElement('p')
   body.className = 'start-copy'
